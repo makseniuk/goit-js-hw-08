@@ -90,4 +90,55 @@ images.forEach(image => {
 
 });
 
-listGallery.append(gallery)
+listGallery.append(gallery);
+
+// Delegation for original img
+
+// listGallery.addEventListener("click", selectedImage);
+
+// function selectedImage(event) {
+//   event.preventDefault();
+
+//   const clickedImage = event.target.closest(".gallery-image");
+
+//   if (clickedImage) {
+//     const selectedImageSrc = clickedImage.dataset.source;
+
+//     const instance = basicLightbox.create(`
+//       <img src="${selectedImageSrc}" alt="${clickedImage.alt}" width="100%" height="100%">
+//     `);
+
+//     instance.show();
+//   }
+// };
+
+let instance = null;
+
+listGallery.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const clickedImage = event.target.closest(".gallery-image");
+
+  if (clickedImage) {
+    const selectedImageSrc = clickedImage.dataset.source;
+
+    if (instance) {
+      instance.close();
+    }
+
+    instance = basicLightbox.create(`<img src="${selectedImageSrc}" alt="${clickedImage.alt}" width="100%" height="100%">`);
+    instance.show();
+
+    document.addEventListener("keydown", handleKeyPress);
+  }
+});
+
+function handleKeyPress(event) {
+  if (event.key === "Escape" && instance) {
+    instance.close();
+    instance = null;
+    document.removeEventListener("keydown", handleKeyPress);
+  }
+}
+
+
